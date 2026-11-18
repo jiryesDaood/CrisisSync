@@ -1,0 +1,135 @@
+@startuml
+title CrisisSync - Use Case Diagram
+
+' ===== Human actors (place LEFT of the system boundary in Visual Paradigm) =====
+actor "User" as User
+actor "System Administrator" as Admin
+actor "Logistics and Resources Officer" as Logistics
+actor "Dispatcher" as Dispatcher
+actor "Field Commander" as Commander
+actor "Field Crew Member" as Crew
+
+' ===== Non-human actors (place RIGHT of the system boundary in Visual Paradigm) =====
+actor "National Clearing and Settlement System" as Clearing
+actor "System Clock" as Clock
+
+' ===== System boundary =====
+rectangle CrisisSync {
+    ' --- Access and administration ---
+    usecase "Log In" as UC01
+    usecase "Manage User Accounts" as UC02
+    usecase "Load Initial Data" as UC03
+    usecase "View Incident History" as UC04
+    usecase "View Incident Details and Timeline" as UC05
+    usecase "View Management Reports" as UC06
+
+    ' --- Resource pool ---
+    usecase "Update Equipment Maintenance Status" as UC07
+    usecase "Transfer Equipment Between Stations" as UC08
+    usecase "Update Crew Member Availability" as UC09
+
+    ' --- Field operations ---
+    usecase "Report Shift Start and Readiness" as UC10
+    usecase "View Assigned Task Details" as UC11
+    usecase "Report Equipment Fault" as UC12
+
+    ' --- Incidents and task trees ---
+    usecase "Open Incident" as UC13
+    usecase "Create Task" as UC14
+    usecase "Modify Task Dependencies" as UC15
+    usecase "Validate Dependency Graph" as UC16
+    usecase "Reject Cyclic Dependency" as UC17
+    usecase "Monitor Incident Status" as UC18
+    usecase "Cancel Task" as UC19
+    usecase "Cancel Dependent Tasks" as UC20
+    usecase "Release Task Resources" as UC21
+    usecase "Cancel Incident" as UC22
+
+    ' --- Resource reservation and task completion ---
+    usecase "Reserve Resource Package" as UC23
+    usecase "Auto-Allocate Resource Package" as UC24
+    usecase "Reserve Resources Atomically" as UC25
+    usecase "Roll Back Reservation" as UC26
+    usecase "Retry with Next Best Alternative" as UC27
+    usecase "Assign Replacement Resource" as UC28
+    usecase "Report Task Completion" as UC29
+    usecase "Update Task Readiness" as UC30
+
+    ' --- Incident closure, settlement and reports ---
+    usecase "Close Incident" as UC31
+    usecase "Calculate Operating Costs" as UC32
+    usecase "Handle Settlement Rejection" as UC33
+    usecase "Generate Monthly Reports" as UC34
+    usecase "Generate SLA Compliance Report" as UC35
+    usecase "Generate Resource Utilization Report" as UC36
+}
+
+' ===== Actor generalization (every user type logs in) =====
+User <|-- Admin
+User <|-- Logistics
+User <|-- Dispatcher
+User <|-- Commander
+User <|-- Crew
+
+' ===== Associations: solid lines, no arrows =====
+User -- UC01
+
+Admin -- UC02
+Admin -- UC03
+Admin -- UC04
+Admin -- UC06
+Admin -- UC35
+Admin -- UC36
+
+Logistics -- UC07
+Logistics -- UC08
+Logistics -- UC09
+
+Crew -- UC10
+Crew -- UC11
+Crew -- UC12
+
+Commander -- UC12
+Commander -- UC18
+Commander -- UC29
+
+Dispatcher -- UC13
+Dispatcher -- UC14
+Dispatcher -- UC15
+Dispatcher -- UC18
+Dispatcher -- UC19
+Dispatcher -- UC22
+Dispatcher -- UC23
+Dispatcher -- UC24
+Dispatcher -- UC28
+Dispatcher -- UC31
+
+UC31 -- Clearing
+UC34 -- Clock
+
+' ===== <<include>>: base use case ..> included use case =====
+UC14 ..> UC16 : <<include>>
+UC15 ..> UC16 : <<include>>
+UC15 ..> UC30 : <<include>>
+UC19 ..> UC21 : <<include>>
+UC20 ..> UC21 : <<include>>
+UC22 ..> UC21 : <<include>>
+UC23 ..> UC25 : <<include>>
+UC24 ..> UC25 : <<include>>
+UC28 ..> UC25 : <<include>>
+UC29 ..> UC21 : <<include>>
+UC29 ..> UC30 : <<include>>
+UC31 ..> UC32 : <<include>>
+UC34 ..> UC35 : <<include>>
+UC34 ..> UC36 : <<include>>
+
+' ===== <<extend>>: extending use case ..> base use case =====
+UC05 ..> UC04 : <<extend>>
+UC17 ..> UC16 : <<extend>>
+UC20 ..> UC19 : <<extend>>
+UC26 ..> UC25 : <<extend>>
+UC27 ..> UC24 : <<extend>>
+UC27 ..> UC28 : <<extend>>
+UC33 ..> UC31 : <<extend>>
+
+@enduml

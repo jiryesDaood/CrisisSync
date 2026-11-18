@@ -1,0 +1,10 @@
+# Visual Paradigm lock and backup files
+*.vpp.lck
+*.vpp.bak*
+*.vpp~*
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+# Submission archives
+*.zip
